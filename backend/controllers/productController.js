@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 })
 //post request
 
-router.post("/product", async (req, res) => {
+router.post("/products", async (req, res) => {
     const {name,description,category,price,stock}= req.body;
     try {
         const product = await prisma.product.create({
