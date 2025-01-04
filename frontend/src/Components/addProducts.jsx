@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
-import AddProductsModal from './Modals/AddProductModal';
+import AddproductModal from './AddproductModal';
 const AddProducts = () => {
   const [products, setProducts] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleopenmodal = () => {
-    setIsModalOpen(true);
-  }
-  const handleclosemodal = () => {
-    setIsModalOpen(false);
-  }
+  const [showModal, setShowModal] = useState(false);
+  
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:3000/api/');
@@ -24,12 +19,32 @@ const AddProducts = () => {
   useEffect(() => {
     fetchData();
   }, [])
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(`http://localhost:3000/api/${id}`);
+      console.log(response);
+      fetchData(); // Refresh the product list after deletion
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleAddProduct = async (newProduct) => {
+    try {
+      const response = await axios.post('http://localhost:3000/api/', newProduct);
+      console.log(response.data);
+      
+      fetchData(); // Refresh the product list after adding
+      setShowModal(false); // Close the modal after successful submission
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="overflow-x-auto p-4">
       <div className='flex justify-between items-center mb-3'>
 
         <h1 className="text-2xl font-bold text-gray-800">Products</h1>
-        <button onClick={handleopenmodal} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Add New</button>
+        <button onClick={()=>{setShowModal(true)}} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Add New</button>
       </div>
       <table className="table-auto w-full border-collapse border border-gray-300">
         <thead>
@@ -60,7 +75,7 @@ const AddProducts = () => {
                 <button className="text-green-500 hover:text-green-700">
                   <FaEye />
                 </button>
-                <button className="text-red-500 hover:text-red-700">
+                <button className="text-red-500 hover:text-red-700" onClick={()=>handleDelete(product.id)}>
                   <FaTrash />
                 </button>
               </td>
@@ -68,10 +83,12 @@ const AddProducts = () => {
           ))}
         </tbody>
       </table>
-      {isModalOpen && (
-        <AddProductsModal onClose={handleclosemodal} />
+      {showModal && (
+        <AddproductModal
+          onClose={() => setShowModal(false)}
+          onAdd={(product) => handleAddProduct(product)}
+        />
       )}
-
     </div>
   )
 }

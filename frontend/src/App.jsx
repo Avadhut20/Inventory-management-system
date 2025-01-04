@@ -2,7 +2,7 @@
 import './App.css'
 import SideBar from './Components/sideBar'
 import AddProducts from './Components/addProducts'
-import AddProductModal from './Components/Modals/AddProductModal'
+
 function App() {
   
   return (
