@@ -4,10 +4,6 @@ const express = require('express');
 const bodyparser = require('body-parser');
 
 const router = express.Router();
-
-
-
-
 //get request
 router.get("/", async (req, res) => {
     try {
@@ -20,9 +16,24 @@ router.get("/", async (req, res) => {
 
     }
 })
+//get by id 
+router.get("/:id",async(req,res)=>{
+    try{
+        const id= req.params.id;
+        const product=await prisma.product.findUnique({
+            where:{
+                id:Number(id)
+            }
+        });
+        res.status(200).json(product);
+    }
+    catch(error){
+        console.log(error); 
+    }
+})
 //post request
 
-router.post("/products", async (req, res) => {
+router.post("/", async (req, res) => {
     const {name,description,category,price,stock}= req.body;
     try {
         const product = await prisma.product.create({
@@ -43,7 +54,7 @@ router.post("/products", async (req, res) => {
 })
 
 //update
-router.put("/product/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
     const id = req.params.id;
     const {name,description,category,price,stock}= req.body;
     try {
@@ -77,8 +88,8 @@ router.put("/product/:id", async (req, res) => {
 
 //delete request
 
-router.delete("/product/:id", async (req, res) => {
-    const id = req.params.id;
+router.delete("/:id", async (req, res) => {
+    const id = parseInt(req.params.id, 10);
     try {
         const findprodcut= await prisma.product.findUnique({
             where:{
