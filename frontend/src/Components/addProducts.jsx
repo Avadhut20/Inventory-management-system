@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
 import AddproductModal from './AddproductModal';
+import ViewModal from './ViewModal';
 const AddProducts = () => {
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showViewModal,setshowViewModal]=useState(false);
   
+  const [selectedProductId, setSelectedProductId] = useState(null);
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:3000/api/');
@@ -72,7 +75,10 @@ const AddProducts = () => {
                 <button className="text-blue-500 hover:text-blue-700">
                   <FaEdit />
                 </button>
-                <button className="text-green-500 hover:text-green-700">
+                <button className="text-green-500 hover:text-green-700"  onClick={() => {
+                    setSelectedProductId(product.id);
+                    setshowViewModal(true);
+                  }}>
                   <FaEye />
                 </button>
                 <button className="text-red-500 hover:text-red-700" onClick={()=>handleDelete(product.id)}>
@@ -89,6 +95,11 @@ const AddProducts = () => {
           onAdd={(product) => handleAddProduct(product)}
         />
       )}
+      {
+        showViewModal && (
+          <ViewModal onClose={()=>{setshowViewModal(false)}} id={selectedProductId}/>
+        )
+      }
     </div>
   )
 }
