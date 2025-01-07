@@ -3,10 +3,13 @@ import axios from 'axios'
 import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
 import AddproductModal from './AddproductModal';
 import ViewModal from './ViewModal';
+import UpdateModal from './UpdateModal';
 const AddProducts = () => {
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showViewModal,setshowViewModal]=useState(false);
+  const [showUpdateModal,setshowUpdateModal]=useState(false);
+  const [updateId,setupdateId]=useState(null);
   
   const [selectedProductId, setSelectedProductId] = useState(null);
   const fetchData = async () => {
@@ -72,7 +75,12 @@ const AddProducts = () => {
               <td className="px-4 py-2 border border-gray-300">{product.price}</td>
               <td className="px-4 py-2 border border-gray-300">{product.stock}</td>
               <td className="px-4 py-2 border border-gray-300 flex space-x-2">
-                <button className="text-blue-500 hover:text-blue-700">
+                <button className="text-blue-500 hover:text-blue-700"
+                onClick={() => {
+                  setupdateId(product.id);
+                  setshowUpdateModal(true);
+                }}
+                >
                   <FaEdit />
                 </button>
                 <button className="text-green-500 hover:text-green-700"  onClick={() => {
@@ -98,6 +106,14 @@ const AddProducts = () => {
       {
         showViewModal && (
           <ViewModal onClose={()=>{setshowViewModal(false)}} id={selectedProductId}/>
+        )
+      }
+      {
+        showUpdateModal && (
+          <UpdateModal
+            onClose={() => setshowUpdateModal(false)}
+            id={updateId}
+          />
         )
       }
     </div>
