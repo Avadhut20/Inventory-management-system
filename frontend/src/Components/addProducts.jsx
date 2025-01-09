@@ -14,7 +14,7 @@ const AddProducts = () => {
   const [selectedProductId, setSelectedProductId] = useState(null);
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/');
+      const response = await axios.get('http://localhost:3000/');
       setProducts(response.data);
       console.log(response)
     }
